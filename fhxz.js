@@ -134,7 +134,7 @@ function zdcj(timeout = 0) {
         if (lb[0].type == 'system_error') {
           $.log(`\n抽奖次数不足`)
         } else {
-          $.log(`\n全体加速成功 剩余次数：` + lb[0]["data"]["lotteryInfo"].remainingTimes)
+          $.log(`\n抽奖成功 剩余次数：` + lb[0]["data"]["lotteryInfo"].remainingTimes)
           await $.wait(30000);
           await zdcj();
         }
