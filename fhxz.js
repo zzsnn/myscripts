@@ -1,5 +1,4 @@
 /*
-//9.17只保留观看25次广告后提现
 [rewrite_local]
 #富豪小镇
 https://sunnytown.hyskgame.com/api/messages\SaccessToken=\w+&msgtype=system_getGpvGameOptions url script-request-body https://raw.fastgit.org/byxiaopeng/myscripts/main/fhxz.js
@@ -23,7 +22,8 @@ let fhxzurlArr = []
 let time = Math.round(Date.now() / 1000)
 let fhxzurl = $.isNode() ? (process.env.fhxzurl ? process.env.fhxzurl : "") : ($.getdata('fhxzurl') ? $.getdata('fhxzurl') : "")
 let fhxzurls = ""
-
+let arr = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
+let arr15 = [15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
 //
 !(async() => {
   if (typeof $request !== "undefined") {
@@ -40,10 +40,10 @@ let fhxzurls = ""
         if (fhxzurlArr[i]) {
           fhxzurl = fhxzurlArr[i];
           $.index = i + 1;
-          console.log(`\n开始【富豪小镇 ${$.index}】`) 
-          await quantijs(); //全体加速
+          console.log(`\n开始【富豪小镇账户 ${$.index}】`) 
+          await qtjsAll(arr15); //全体加速
           await $.wait(30000);
-          await zdcj();//自动抽奖
+          await zdcjAll(arr);//自动抽奖
           await $.wait(30000);
           await txlb();//提现列表
         }
@@ -60,15 +60,15 @@ let fhxzurls = ""
           fhxzurlArr.push(fhxzurls[item])
         }
       })
-      console.log(`共${fhxzurlArr.length}个cookie`)
+      console.log(`共${fhxzurlArr.length}个账号`)
       for (let k = 0; k < fhxzurlArr.length; k++) {
         $.message = ""
         fhxzurl = fhxzurlArr[k]
         $.index = k + 1;
-        console.log(`\n开始【富豪小镇 ${$.index}】`)
-        await quantijs(); //全体加速
+        console.log(`\n开始【富豪小镇账户 ${$.index}】`)
+        await qtjsAll(arr15); //全体加速
         await $.wait(30000);
-        await zdcj();//自动抽奖
+        await zdcjAll(arr);//自动抽奖
         await $.wait(30000);
         await txlb();//提现列表
       }
@@ -91,7 +91,12 @@ function fhxzck() {
 
 
 //全体加速 15次
-function quantijs(timeout = 0) {
+async function qtjsAll(Array) {
+  for (const i of Array) {
+    await quantijs(i);
+  }
+}
+function quantijs(num) {
   return new Promise((resolve) => {
     id = fhxzurl.match(/Token=\S+&/)
     let url = {
@@ -104,23 +109,27 @@ function quantijs(timeout = 0) {
         var lb = result
         if (lb[0].type == 'system_error') {
           $.log(`\n全体加速今日次数已用完`)
+          await $.wait(Math.floor(Math.random() * 100) + 3000);
         } else {
-          $.log(`\n全体加速成功 剩余次数：` + lb[0]["data"]["speedUpInfo"].remainingAllTimes)
-          await $.wait(30000);
-          await quantijs();
+          $.log(`\n全体加速成功 剩余次数：` + num)
+          await $.wait(Math.floor(Math.random() * 100) + 32000);
         }
       } catch (e) {
         $.logErr(e, resp);
       } finally {
         resolve()
       }
-    }, timeout)
+    }, 0)
   })
 }
-
-
 //抽奖10次
-function zdcj(timeout = 0) {
+async function zdcjAll(Array) {
+  for (const i of Array) {
+    await zdcj(i);
+  }
+}
+
+function zdcj(num) {
   return new Promise((resolve) => {
     id = fhxzurl.match(/Token=\S+&/)
     let url = {
@@ -133,20 +142,19 @@ function zdcj(timeout = 0) {
         var lb = result
         if (lb[0].type == 'system_error') {
           $.log(`\n抽奖次数不足`)
+          await $.wait(Math.floor(Math.random() * 100) + 3000);
         } else {
-          $.log(`\n抽奖成功 剩余次数：` + lb[0]["data"]["lotteryInfo"].remainingTimes)
-          await $.wait(30000);
-          await zdcj();
+          $.log(`\n抽奖成功 剩余次数：` + num)
+          await $.wait(Math.floor(Math.random() * 100) + 32000);
         }
       } catch (e) {
         $.logErr(e, resp);
       } finally {
         resolve()
       }
-    }, timeout)
+    }, 0)
   })
 }
-
 
 //提现列表获取
 function txlb(timeout = 0) {
