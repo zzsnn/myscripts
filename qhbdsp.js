@@ -104,13 +104,14 @@ function qhbdspksp(timeout = 0) {
             try {
                 data = JSON.parse(data)
                 if (data.code == 200) {
-                    console.log(`【看视频成功】获得金币`+data.data["reward_gold"])
+                    console.log(`\n【看视频成功】获得金币` + data.data["reward_gold"])
+                    $.message += `\n【看视频成功】获得金币` + data.data["reward_gold"]
                 } else {
                     console.log(data.message)
+                    $.message += `\n【看视频成功】获得金币` + data.message
                 }
 
             } catch (e) {
-
             } finally {
                 resolve()
             }
