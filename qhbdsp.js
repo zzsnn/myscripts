@@ -74,10 +74,6 @@ $.message = ''
 function qhbdspck() {
     if ($request.url.indexOf("reward/video") > -1) {
 
-        const ycburl = $request.url
-        if (ycburl) $.setdata(ycburl, `ycburl${status}`)
-        $.log(ycburl)
-
         const qhbdsphd = JSON.stringify($request.headers)
         if (qhbdsphd) $.setdata(qhbdsphd, `qhbdsphd${status}`)
         $.log(qhbdsphd)
