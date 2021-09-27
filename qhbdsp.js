@@ -1,5 +1,6 @@
 /*
 软件名：趣红包短视频     收益未知  定时自己设置  执行一次脚本大概需要3分钟
+邀请码：EEBCO46Q
 【REWRITE】
 匹配链接（正则表达式） http://api2.guaniuvideo.com/reward/video
 对应重写目标   https://raw.fastgit.org/byxiaopeng/myscripts/main/qhbdsp.js
@@ -10,8 +11,7 @@
 const $ = new Env('趣红包短视频');
 let status;
 status = (status = ($.getval("qhbdspstatus") || "1")) > 1 ? `${status}` : ""; // 账号扩展字符
-const qhbdspurlArr = [],
-    qhbdsphdArr = [],
+const qhbdsphdArr = [],
     qhbdspbodyArr = [],
     qhbdspcount = ''
 
@@ -20,20 +20,21 @@ let qhbdspbody = $.getdata('qhbdspbody');
 let times = new Date().getTime();
 let DD = RT(60000, 100000);
 let tz = ($.getval('tz') || '1');
+let dz = [80157, 109931, 114503]
+let rwmid = [87, 11, 70, 88, 89]
+//{"extra":"{\"mid\":\"118\",\"code_id\":\"xx\",\"position_id\":\"xx\"}"}  看视频5分钟奖励
+//{"extra":"{\"mid\":\"117\",\"code_id\":\"xx\",\"position_id\":\"xx\"}"}  看视频3分钟奖励
+//{"extra":"{\"mid\":\"116\",\"code_id\":\"xx\",\"position_id\":\"xx\"}"}  看视频1分钟奖励
 $.message = ''
-
-
 !(async () => {
     if (typeof $request !== "undefined") {
         qhbdspck()
 
     } else {
-        qhbdspurlArr.push($.getdata('qhbdspurl'))
         qhbdsphdArr.push($.getdata('qhbdsphd'))
         qhbdspbodyArr.push($.getdata('qhbdspbody'))
         let qhbdspcount = ($.getval('qhbdspcount') || '1');
         for (let i = 2; i <= qhbdspcount; i++) {
-            qhbdspurlArr.push($.getdata(`qhbdspurl${i}`))
             qhbdsphdArr.push($.getdata(`qhbdsphd${i}`))
             qhbdspbodyArr.push($.getdata(`qhbdspbody${i}`))
         }
@@ -47,13 +48,39 @@ $.message = ''
         console.log(`=================== 共${qhbdsphdArr.length}个账号 ==================\n`)
         for (let i = 0; i < qhbdsphdArr.length; i++) {
             if (qhbdsphdArr[i]) {
-
-                qhbdspurl = qhbdspurlArr[i];
                 qhbdsphd = qhbdsphdArr[i];
                 qhbdspbody = qhbdspbodyArr[i];
                 $.index = i + 1;
                 console.log(`\n【 趣红包短视频 账号${$.index} 】`)
-                //await $.wait(DD)
+                await getUserInfo()
+                await $.wait(1000)
+                await getAll()
+                //await $.wait(3000)
+                //await dzspAll(dz)  //点赞视频
+                //await $.wait(3000)
+                //await fbpl(dz)  //评论视频
+                //await $.wait(3000)
+                //await fxsp(dz)  //分享视频
+                //await $.wait(3000)
+                //await getRewardAll(rwmid)  //任务奖励
+                //await dzlq()   //获取ad参数
+                //await $.wait(3000)
+                //await pllq()  //获取ad参数
+                //await $.wait(3000)
+                //await bxlq() //获取ad参数
+                //await $.wait(3000)
+                //await fxlq() //获取ad参数
+                //await $.wait(3000)
+                //await dzwc()   //双倍领取
+                //await $.wait(3000)
+                //await plwc()  //双倍领取
+                //await $.wait(3000)
+                //await bxwc() //双倍领取
+                //await $.wait(3000)
+                //await fxwc() //双倍领取
+                //await $.wait(3000)
+                //await qxdzAll(dz)  //取消点赞
+                
                 for (let x = 0; x < 5; x++) {
                     $.index = x + 1
                     console.log(`\n第${x + 1}次看视频！`)
@@ -70,9 +97,8 @@ $.message = ''
     .finally(() => $.done())
 
 
-
 function qhbdspck() {
-    if ($request.url.indexOf("reward/video") > -1) {
+    if ($request.url.indexOf("reward/video") > -1 && $request.body.indexOf("check_token") > -1) {
 
         const qhbdsphd = JSON.stringify($request.headers)
         if (qhbdsphd) $.setdata(qhbdsphd, `qhbdsphd${status}`)
@@ -87,8 +113,488 @@ function qhbdspck() {
     }
 }
 
+function getUserInfo(timeout = 0) {
+    return new Promise((resolve) => {
+        let url = {
+            url: `http://api2.guaniuvideo.com/user/getUserInfo`,
+            headers: JSON.parse(qhbdsphd),
+        }
+        $.post(url, async (err, resp, data) => {
+            try {
+                data = JSON.parse(data)
+                if (data.code == 200) {
+                    user_id=data.data["id"]
+                    console.log(`\n你的账户ID是：` + data.data["id"] + `\n你的邀请码是：` + data.data["recommend_id"])
+                    $.message += `\n你的账户ID是：` + data.data["id"] + `\n你的邀请码是：` + data.data["recommend_id"]
+                } else {
+                    console.log(data.message)
+                    $.message += `\n个人资料获取失败` + data.message
+                }
 
-//看视频
+            } catch (e) {
+            } finally {
+                resolve()
+            }
+        }, timeout)
+    })
+}
+
+
+function getAll(timeout = 0) {
+    return new Promise((resolve) => {
+        let url = {
+            url: `http://api2.guaniuvideo.com/mission/getAll`,
+            headers: JSON.parse(qhbdsphd),
+        }
+        $.post(url, async (err, resp, data) => {
+            try {
+                data = JSON.parse(data)
+                if (data.code == 200) {
+                    renwu=data.data.daily[0].title
+                    mid=data.data.daily[0]['mission_id']
+                    console.log(`\n任务名称：` + data.data.daily[0].title + `---任务mid：` + data.data.daily[0]['mission_id'])
+                    console.log(`\n任务名称：` + data.data.daily[1].title + `---任务mid：` + data.data.daily[1]['mission_id'])
+                    console.log(`\n任务名称：` + data.data.daily[2].title + `---任务mid：` + data.data.daily[2]['mission_id'])
+                    console.log(`\n任务名称：` + data.data.daily[3].title + `---任务mid：` + data.data.daily[3]['mission_id'])
+                    console.log(`\n任务名称：` + data.data.daily[4].title + `---任务mid：` + data.data.daily[4]['mission_id'])
+                    $.message += `\n任务名称：` + data.data.daily[0].title + `---任务mid：` + data.data.daily[0]['mission_id']
+                    $.message += `\n任务名称：` + data.data.daily[1].title + `---任务mid：` + data.data.daily[1]['mission_id']
+                    $.message += `\n任务名称：` + data.data.daily[2].title + `---任务mid：` + data.data.daily[2]['mission_id']
+                    $.message += `\n任务名称：` + data.data.daily[3].title + `---任务mid：` + data.data.daily[3]['mission_id']
+                    $.message += `\n任务名称：` + data.data.daily[4].title + `---任务mid：` + data.data.daily[4]['mission_id']
+                } else {
+                    console.log(data.message)
+                }
+
+            } catch (e) {
+            } finally {
+                resolve()
+            }
+        }, timeout)
+    })
+}
+
+//点赞视频 3次
+async function dzspAll(Array) {
+    for (const i of Array) {
+      await dzsp(i);
+      await $.wait(3000)
+    }
+  }
+
+function dzsp(num) {
+    return new Promise((resolve) => {
+        let url = {
+            url: `http://api2.guaniuvideo.com/video/like`,
+            headers: JSON.parse(qhbdsphd),
+            body:`{"like":1,"video_id":${num}}`,
+        }
+        $.post(url, async (err, resp, data) => {
+            try {
+                data = JSON.parse(data)
+                if (data.code == 200) {
+                    console.log(`\n【点赞成功ID】+`+ num)
+                    $.message += `\n【点赞成功视频ID】`+ num
+                } else {
+                    console.log(`\n【点赞失败】`)
+                    $.message += `\n【点赞失败】`
+                }
+
+            } catch (e) {
+            } finally {
+                resolve()
+            }
+        }, 0)
+    })
+}
+
+//点赞视频 3次
+async function qxdzAll(Array) {
+    for (const i of Array) {
+      await qxdz(i);
+      await $.wait(3000)
+    }
+  }
+
+function qxdz(num) {
+    return new Promise((resolve) => {
+        let url = {
+            url: `http://api2.guaniuvideo.com/video/like`,
+            headers: JSON.parse(qhbdsphd),
+            body:`{"like":0,"video_id":${num}}`,
+        }
+        $.post(url, async (err, resp, data) => {
+            try {
+                data = JSON.parse(data)
+                if (data.code == 200) {
+                    console.log(`\n【取消点赞成功ID】+`+ num)
+                    $.message += `\n【取消点赞成功视频ID】`+ num
+                } else {
+                    console.log(`\n【取消点赞失败】`)
+                    $.message += `\n【取消点赞失败】`
+                }
+
+            } catch (e) {
+            } finally {
+                resolve()
+            }
+        }, 0)
+    })
+}
+
+
+//任务奖励
+async function getRewardAll(Array) {
+    for (const i of Array) {
+      await getReward(i);
+      await $.wait(3000)
+    }
+  }
+
+
+function getReward(num) {
+    return new Promise((resolve) => {
+        let url = {
+            url: `http://api2.guaniuvideo.com/reward/videoNotify`,
+            headers: JSON.parse(qhbdsphd),
+            body:`{"extra":"{\"code_id\":\"${code_id}\",\"position_id\":\"${position_id}\"}"}`,
+        }
+        $.post(url, async (err, resp, data) => {
+            try {
+                data = JSON.parse(data)
+                console.log(data)
+                if (data.code == 200) {
+                    console.log(`\n【获得金币】`+ data.data)
+                    $.message += `\n【获得金币】`+ data.data
+                } else {
+                    console.log(`\n【任务已完成】`)
+                    $.message += `\n【任务已完成】`
+                }
+
+            } catch (e) {
+            } finally {
+                resolve()
+            }
+        }, 0)
+    })
+}
+
+
+
+async function getRewardAll(Array) {
+    for (const i of Array) {
+      await getReward(i);
+      await $.wait(3000)
+    }
+  }
+
+function getReward(num) {
+    return new Promise((resolve) => {
+        let url = {
+            url: `http://api2.guaniuvideo.com/mission/getReward`,
+            headers: JSON.parse(qhbdsphd),
+            body:`{"mid":${num}}`,
+        }
+        $.post(url, async (err, resp, data) => {
+            try {
+                data = JSON.parse(data)
+                console.log(data)
+                if (data.code == 200) {
+                    console.log(`\n【完成任务ID】+`+ num)
+                    $.message += `\n【完成任务ID】`+ num
+                } else {
+                    console.log(`\n【任务已完成】`)
+                    $.message += `\n【任务已完成】`
+                }
+
+            } catch (e) {
+            } finally {
+                resolve()
+            }
+        }, 0)
+    })
+}
+//http://api2.guaniuvideo.com/comment/submit
+//{"content":"牛","video_id":"136121"}
+//发表评论
+function fbpl(timeout = 0) {
+    return new Promise((resolve) => {
+        let url = {
+            url: `http://api2.guaniuvideo.com/comment/submit`,
+            headers: JSON.parse(qhbdsphd),
+            body:`{"content":"牛","video_id":"136121"}`,
+        }
+        $.post(url, async (err, resp, data) => {
+            try {
+                data = JSON.parse(data)
+                console.log(data)
+                if (data.code == 200) {
+                    console.log(`\n发表评论成功视频ID：136121`)
+                    $.message += `\n发表评论成功视频ID：136121`
+                } else {
+                    console.log(data.message)
+                }
+
+            } catch (e) {
+            } finally {
+                resolve()
+            }
+        }, timeout)
+    })
+}
+//宝箱position_id获取和ad_code
+function bxlq(timeout = 0) {
+    return new Promise((resolve) => {
+        let url = {
+            url: `http://api2.guaniuvideo.com/system/getAd`,
+            headers: JSON.parse(qhbdsphd),
+            body:'{"keyword":"BoxVideo","user_id":' + user_id + '}',
+        }
+        $.post(url, async (err, resp, data) => {
+            try {
+                data = JSON.parse(data)
+                console.log(data)
+                if (data.code == 200) {
+                    bxcode_id=data.data[1]["ad_code"]
+                    bxposition_id=data.data[1]["position_id"]
+                    console.log(`\n宝箱code_id是：` + data.data[1]["ad_code"] + `\n宝箱position_id是：` + data.data[1]["position_id"])
+                    $.message += `\n宝箱code_id是：` + data.data[1]["ad_code"] + `\n宝箱position_id是：` + data.data[1]["position_id"]
+                } else {
+                    console.log(data.message)
+                }
+
+            } catch (e) {
+            } finally {
+                resolve()
+            }
+        }, timeout)
+    })
+}
+
+
+//分享视频position_id获取和ad_code
+function fxlq(timeout = 0) {
+    return new Promise((resolve) => {
+        let url = {
+            url: `http://api2.guaniuvideo.com/system/getAd`,
+            headers: JSON.parse(qhbdsphd),
+            body:'{"keyword":"TaskDouble","user_id":' + user_id + '}',
+        }
+        $.post(url, async (err, resp, data) => {
+            try {
+                data = JSON.parse(data)
+                console.log(data)
+                if (data.code == 200) {
+                    fxcode_id=data.data[1]["ad_code"]
+                    fxposition_id=data.data[1]["position_id"]
+                    console.log(`\n分享视频code_id是：` + data.data[1]["ad_code"] + `\n分享视频position_id是：` + data.data[1]["position_id"])
+                    $.message += `\n分享视频code_id是：` + data.data[1]["ad_code"] + `\n分享视频position_id是：` + data.data[1]["position_id"]
+                } else {
+                    console.log(data.message)
+                }
+
+            } catch (e) {
+            } finally {
+                resolve()
+            }
+        }, timeout)
+    })
+}
+
+//点赞小视频position_id获取和ad_code
+function dzlq(timeout = 0) {
+    return new Promise((resolve) => {
+        let url = {
+            url: `http://api2.guaniuvideo.com/system/getAd`,
+            headers: JSON.parse(qhbdsphd),
+            body:'{"keyword":"TaskDouble","user_id":' + user_id + '}',
+        }
+        $.post(url, async (err, resp, data) => {
+            try {
+                data = JSON.parse(data)
+                console.log(data)
+                if (data.code == 200) {
+                    dzcode_id=data.data[0]["ad_code"]
+                    dzposition_id=data.data[0]["position_id"]
+                    console.log(`\n点赞小视频code_id是：` + data.data[0]["ad_code"] + `\n点赞小视频position_id是：` + data.data[0]["position_id"])
+                    $.message += `\n点赞小视频code_id是：` + data.data[0]["ad_code"] + `\n点赞小视频position_id是：` + data.data[0]["position_id"]
+                } else {
+                    console.log(data.message)
+                }
+
+            } catch (e) {
+            } finally {
+                resolve()
+            }
+        }, timeout)
+    })
+}
+
+//评论小视频position_id获取和ad_code
+function pllq(timeout = 0) {
+    return new Promise((resolve) => {
+        let url = {
+            url: `http://api2.guaniuvideo.com/system/getAd`,
+            headers: JSON.parse(qhbdsphd),
+            body:'{"keyword":"TaskDouble","user_id":' + user_id + '}',
+        }
+        $.post(url, async (err, resp, data) => {
+            try {
+                data = JSON.parse(data)
+                if (data.code == 200) {
+                    plcode_id=data.data[0]["ad_code"]
+                    plposition_id=data.data[0]["position_id"]
+                    console.log(`\n评论小视频code_id是：` + data.data[0]["ad_code"] + `\n评论小视频position_id是：` + data.data[0]["position_id"])
+                    $.message += `\n评论小视频code_id是：` + data.data[0]["ad_code"] + `\n评论小视频position_id是：` + data.data[0]["position_id"]
+                } else {
+                    console.log(data.message)
+                }
+
+            } catch (e) {
+            } finally {
+                resolve()
+            }
+        }, timeout)
+    })
+}
+//宝箱任务翻倍完成
+function bxwc(timeout = 0) {
+    return new Promise((resolve) => {
+        let url = {
+            url: `http://api2.guaniuvideo.com/reward/videoNotify`,
+            headers: JSON.parse(qhbdsphd),
+            body:`{"extra":"{\"code_id\":\"${bxcode_id}\",\"position_id\":\"${bxposition_id}\"}"}`,
+        }
+        $.post(url, async (err, resp, data) => {
+            try {
+                data = JSON.parse(data)
+                console.log(data)
+                if (data.code == 200) {
+                    console.log(`\n【宝箱任务获得金币】`+ data.data)
+                    $.message += `\n【宝箱任务获得金币】`+ data.data
+                } else {
+                    console.log(`\n【宝箱任务已完成】`)
+                    $.message += `\n【宝箱任务已完成】`
+                }
+
+            } catch (e) {
+            } finally {
+                resolve()
+            }
+        }, timeout)
+    })
+}
+
+
+//分享任务翻倍完成
+function fxwc(timeout = 0) {
+    return new Promise((resolve) => {
+        let url = {
+            url: `http://api2.guaniuvideo.com/reward/videoNotify`,
+            headers: JSON.parse(qhbdsphd),
+            body:`{"extra":"{\"mid\":\"89\",\"code_id\":\"${fxcode_id}\",\"position_id\":\"${fxposition_id}\"}"}`,
+        }
+        $.post(url, async (err, resp, data) => {
+            try {
+                data = JSON.parse(data)
+                console.log(data)
+                if (data.code == 200) {
+                    console.log(`\n【分享视频任务获得金币】`+ data.data)
+                    $.message += `\n【分享视频任务获得金币】`+ data.data
+                } else {
+                    console.log(`\n【分享视频任务已完成】`)
+                    $.message += `\n【分享视频任务已完成】`
+                }
+
+            } catch (e) {
+            } finally {
+                resolve()
+            }
+        }, timeout)
+    })
+}
+
+//点赞小视频翻倍任务完成
+function dzwc(timeout = 0) {
+    return new Promise((resolve) => {
+        let url = {
+            url: `http://api2.guaniuvideo.com/reward/videoNotify`,
+            headers: JSON.parse(qhbdsphd),
+            body:`{"extra":"{\"mid\":\"11\",\"code_id\":\"${dzcode_id}\",\"position_id\":\"${dzposition_id}\"}"}`,
+        }
+        $.post(url, async (err, resp, data) => {
+            try {
+                data = JSON.parse(data)
+                console.log(data)
+                if (data.code == 200) {
+                    console.log(`\n【点赞小视频任务获得金币】`+ data.data)
+                    $.message += `\n【点赞小视频任务获得金币】`+ data.data
+                } else {
+                    console.log(`\n【点赞小视频任务已完成】`)
+                    $.message += `\n【点赞小视频任务已完成】`
+                }
+
+            } catch (e) {
+            } finally {
+                resolve()
+            }
+        }, timeout)
+    })
+}
+
+//评论任务翻倍任务完成
+function plwc(timeout = 0) {
+    return new Promise((resolve) => {
+        let url = {
+            url: `http://api2.guaniuvideo.com/reward/videoNotify`,
+            headers: JSON.parse(qhbdsphd),
+            body:`{"extra":"{\"mid\":\"70\",\"code_id\":\"${plcode_id}\",\"position_id\":\"${plposition_id}\"}"}`,
+        }
+        $.post(url, async (err, resp, data) => {
+            try {
+                data = JSON.parse(data)
+                console.log(data)
+                if (data.code == 200) {
+                    console.log(`\n【评论任务获得金币】`+ data.data)
+                    $.message += `\n【评论任务获得金币】`+ data.data
+                } else {
+                    console.log(`\n【评论任务已完成】`)
+                    $.message += `\n【评论任务已完成】`
+                }
+
+            } catch (e) {
+            } finally {
+                resolve()
+            }
+        }, timeout)
+    })
+}
+//分享视频
+function fxsp(timeout = 0) {
+    return new Promise((resolve) => {
+        let url = {
+            url: `http://api2.guaniuvideo.com/video/share`,
+            headers: JSON.parse(qhbdsphd),
+            body: `{"video_id":"43340"}`,
+        }
+        $.post(url, async (err, resp, data) => {
+            try {
+                data = JSON.parse(data)
+                if (data.code == 200) {
+                    console.log(`\n【分享视频成功】视频ID43340`)
+                    $.message += `\n【分享视频成功】视频ID43340`
+                } else {
+                    console.log(data.message)
+                }
+
+            } catch (e) {
+            } finally {
+                resolve()
+            }
+        }, timeout)
+    })
+}
+
 function qhbdspksp(timeout = 0) {
     return new Promise((resolve) => {
         let url = {
