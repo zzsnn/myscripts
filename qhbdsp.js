@@ -181,7 +181,7 @@ function qhbdspksp(timeout = 0) {
                     $.message += `\n【看视频成功】获得金币` + data.data["reward_gold"]
                 } else {
                     console.log(data.message)
-                    $.message += `\n【看视频成功】获得金币` + data.message
+                    $.message += `\n【看视频失败】` + data.message
                 }
 
             } catch (e) {
