@@ -77,9 +77,9 @@ $.message = ''
     .catch((e) => $.logErr(e))
     .finally(() => $.done())
 
-
+//获取ck
 function qhbdspck() {
-    if ($request.body.indexOf("check_token") > -1) {
+    if ($request.url.indexOf("reward/video") > -1 && $request.body.indexOf("check_token") > -1) {
 
         const qhbdsphd = JSON.stringify($request.headers)
         if (qhbdsphd) $.setdata(qhbdsphd, `qhbdsphd${status}`)
@@ -93,7 +93,7 @@ function qhbdspck() {
 
     }
 }
-
+//个人信息
 function getUserInfo(timeout = 0) {
     return new Promise((resolve) => {
         Modified = new Date().toGMTString()
