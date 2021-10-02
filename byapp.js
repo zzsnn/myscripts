@@ -157,10 +157,10 @@ function dati(timeout = 0) {
           tmid = result.data.id
           $.log(`\n题目iD` + result.data.id)
           $.log(`\n题目内容` + result.data.title)
-          $.log(`\n选择题1` + result.data.values[0].value)
-          $.log(`\n选择题2` + result.data.values[1].value)
-          $.log(`\n选择题3` + result.data.values[2].value)
-          $.log(`\n选择题4` + result.data.values[3].value)
+          $.log(`\n选择题` + result.data.values[0].value)
+          $.log(`\n选择题` + result.data.values[1].value)
+          $.log(`\n选择题` + result.data.values[2].value)
+          $.log(`\n选择题` + result.data.values[3].value)
           await $.wait(10000);
           await godati(tmid);//开始答题
         } else {
@@ -211,10 +211,10 @@ function godati(id) {
           $.log(`\n答题状态` + result.info + `\n开始下一题`)
           $.log(`\n题目iD` + result.data.id)
           $.log(`\n题目内容` + result.data.title)
-          $.log(`\n选择题1内容` + result.data.values[0].value)
-          $.log(`\n选择题2内容` + result.data.values[1].value)
-          $.log(`\n选择题3内容` + result.data.values[2].value)
-          $.log(`\n选择题4内容` + result.data.values[3].value)
+          $.log(`\n选择题` + result.data.values[0].value)
+          $.log(`\n选择题` + result.data.values[1].value)
+          $.log(`\n选择题` + result.data.values[2].value)
+          $.log(`\n选择题` + result.data.values[3].value)
           await $.wait(10000);
           await godati(tmid);//开始答题
         } else {
