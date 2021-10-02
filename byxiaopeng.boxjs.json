@@ -25,6 +25,27 @@
 			"author": "@byxiaopeng",
 			"repo": "https://github.com/byxiaopeng/myscripts",
 			"script": "https://raw.fastgit.org/byxiaopeng/myscripts/main/xfapp.js"
+		},
+		{
+			"id": "byapp",
+			"name": "博越APP",
+			"keys": ["byPhone"],
+			"settings": [
+				{
+					"id": "byPhone",
+					"name": "博越APP账户密码",
+					"val": "",
+					"type": "text",
+					"desc": "token 列表，以@间隔分开"
+				}
+			],
+			"icons": [
+				"https://www.wuhuoculture.com/favicon.ico",
+				"https://www.wuhuoculture.com/favicon.ico"
+			],
+			"author": "@byxiaopeng",
+			"repo": "https://github.com/byxiaopeng/myscripts",
+			"script": "https://raw.fastgit.org/byxiaopeng/myscripts/main/byapp.js"
 		}
 	]
 }
