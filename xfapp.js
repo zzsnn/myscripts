@@ -2,6 +2,7 @@
 脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
 注册地址：https://www.wuhuoculture.com/#/register
 不含邀请链接
+需要实名认证后绑定支付宝
 xfPhone:手机号#密码
 export xfPhone='手机号#密码'
 */
@@ -123,6 +124,9 @@ function sign(timeout = 0) {
       try {
         result = JSON.parse(data);
         if (result.code == 1) {
+          if (result.info == '请实名认证后再签到！') {
+            $.log(`\n错误信息：` + result.info)
+          }
           $.log(`\n签到成功获得现金` + result.data.reward)
         } else {
           $.log(`\n每天只能签到一次`)
