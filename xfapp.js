@@ -184,16 +184,16 @@ async function datiAll(Array) {
 function godati(id) {
   return new Promise((resolve) => {
     key = 1
-    if (id == 41 | id == 40 | id == 94 | id == 25) {
+    if (id == 41 | id == 40 | id == 94 | id == 25 | id == 66) {
       key = 1
     }
-    if (id == 6 | id == 17) {
+    if (id == 6 | id == 17 | id == 76 | id == 68) {
       key = 2
     }
-    if (id == 61 | id ==81) {
+    if (id == 61 | id == 81 | id == 58 | id == 77) {
       key = 3
     }
-    if (id == 70) {
+    if (id == 70 | id == 82) {
       key = 4
     }
     let url = {
