@@ -17,6 +17,7 @@ status = (status = ($.getval("xfstatus") || "1")) > 1 ? `${status}` : ""; // 账
 let xfPhoneArr = []
 let xfPhone = $.isNode() ? (process.env.xfPhone ? process.env.xfPhone : "") : ($.getdata('xfPhone') ? $.getdata('xfPhone') : "")
 let xfPhones = ""
+let idarr = [6, 17, 25, 40, 41, 61, 70, 81, 94]
 //
 !(async() => {
   if (typeof $request !== "undefined") {
@@ -90,7 +91,7 @@ function login(timeout = 0) {
            token = result.data.token
            $.log(`\ntoken获取成功开始执行签到`)
            await $.wait(3000);
-           await sign(token);//签到
+           await sign();//签到
          } else {
            $.log(`\n请填写正确的手机号和密码`)
          }
@@ -105,7 +106,7 @@ function login(timeout = 0) {
 
 
 //签到
-function sign(token) {
+function sign(timeout = 0) {
   return new Promise((resolve) => {
     let url = {
       url: `https://www.wuhuoculture.com/api/user/sign`,
@@ -125,6 +126,103 @@ function sign(token) {
           $.log(`\n签到成功获得现金` + result.data.reward)
         } else {
           $.log(`\n每天只能签到一次`)
+        }
+      } catch (e) {
+        $.logErr(e, resp);
+      } finally {
+        resolve()
+      }
+    }, timeout)
+  })
+}
+//答题开始
+function dati(timeout = 0) {
+  return new Promise((resolve) => {
+    let url = {
+      url: `https://www.wuhuoculture.com/api/index/getask`,
+      headers: {
+        'Host': 'www.wuhuoculture.com',
+        'Content-Type': 'pplication/json;charset=utf-8',
+        'Origin': 'https://www.wuhuoculture.com',
+        'user-agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
+        'Referer': 'https://www.wuhuoculture.com/'
+      },
+      body: `{"token":"${token}"}`,
+    }
+    $.post(url, async (err, resp, data) => {
+      try {
+        result = JSON.parse(data);
+        if (result.code == 1) {
+          tmid = result.data.id
+          $.log(`\n题目iD` + result.data.id)
+          $.log(`\n题目内容` + result.data.title)
+          $.log(`\n选择题` + result.data.values[0].value)
+          $.log(`\n选择题` + result.data.values[1].value)
+          $.log(`\n选择题` + result.data.values[2].value)
+          $.log(`\n选择题` + result.data.values[3].value)
+          await $.wait(10000);
+          await godati(tmid);//开始答题
+        } else {
+          $.log(`\n返回错误信息` + result.info)
+        }
+      } catch (e) {
+        $.logErr(e, resp);
+      } finally {
+        resolve()
+      }
+    }, timeout)
+  })
+}
+
+//答题5次
+async function datiAll(Array) {
+  for (const i of Array) {
+    await godati(i);
+  }
+}
+//答题
+function godati(id) {
+  return new Promise((resolve) => {
+    key = 1
+    if (id == 41 | id == 40 | id == 94 | id == 25) {
+      key = 1
+    }
+    if (id == 6 | id == 17) {
+      key = 2
+    }
+    if (id == 61 | id ==81) {
+      key = 3
+    }
+    if (id == 70) {
+      key = 4
+    }
+    let url = {
+      url: `https://www.wuhuoculture.com/api/index/getask`,
+      headers: {
+        'Host': 'www.wuhuoculture.com',
+        'Content-Type': 'pplication/json;charset=utf-8',
+        'Origin': 'https://www.wuhuoculture.com',
+        'user-agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
+        'Referer': 'https://www.wuhuoculture.com/'
+      },
+      body: `{"id":${id},"key":${key},"token":"${token}"}`,
+    }
+    $.post(url, async (err, resp, data) => {
+      try {
+        result = JSON.parse(data);
+        if (result.code == 1) {
+          tmid = result.data.id
+          $.log(`\n答题状态` + result.info + `\n开始下一题`)
+          $.log(`\n题目iD` + result.data.id)
+          $.log(`\n题目内容` + result.data.title)
+          $.log(`\n选择题` + result.data.values[0].value)
+          $.log(`\n选择题` + result.data.values[1].value)
+          $.log(`\n选择题` + result.data.values[2].value)
+          $.log(`\n选择题` + result.data.values[3].value)
+          await $.wait(10000);
+          await godati(tmid);//开始答题
+        } else {
+          $.log(`\n返回错误信息` + result.info)
         }
       } catch (e) {
         $.logErr(e, resp);
