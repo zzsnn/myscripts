@@ -9,7 +9,7 @@ export xfPhone='手机号#密码'
 
 // [task_local]
 //#溆锋
-// 10 0 * * * https://raw.fastgit.org/byxiaopeng/myscripts/main/xfapp.js, tag=溆锋APP, enabled=true
+// 9 10 * * * https://raw.fastgit.org/byxiaopeng/myscripts/main/xfapp.js, tag=溆锋APP, enabled=true
 
 
 const $ = new Env('溆锋APP签到');
@@ -18,7 +18,6 @@ status = (status = ($.getval("xfstatus") || "1")) > 1 ? `${status}` : ""; // 账
 let xfPhoneArr = []
 let xfPhone = $.isNode() ? (process.env.xfPhone ? process.env.xfPhone : "") : ($.getdata('xfPhone') ? $.getdata('xfPhone') : "")
 let xfPhones = ""
-let idarr = [6, 17, 25, 40, 41, 61, 70, 81, 94]
 //
 !(async() => {
   if (typeof $request !== "undefined") {
@@ -40,6 +39,8 @@ let idarr = [6, 17, 25, 40, 41, 61, 70, 81, 94]
           user=zhanghu[0]
           mima=zhanghu[1]
           await login();//登录获取token
+          await $.wait(3000);
+          await dati();//答题
         }
       }
     } else {
@@ -64,6 +65,8 @@ let idarr = [6, 17, 25, 40, 41, 61, 70, 81, 94]
         user=zhanghu[0]
         mima=zhanghu[1]
         await login();//登录获取token
+        await $.wait(3000);
+        await dati();//答题
       }
     }
   }
@@ -188,16 +191,16 @@ async function datiAll(Array) {
 function godati(id) {
   return new Promise((resolve) => {
     key = 1
-    if (id == 41 | id == 40 | id == 94 | id == 25 | id == 66) {
+    if (id == 2 |id == 14|id == 23 |id == 51 |id == 41 | id == 40 | id == 94 | id == 25 | id == 66 | id == 10 | id == 65 | id == 74 | id == 21| id == 8| id == 54| id == 88| id == 83| id == 85) {
       key = 1
     }
-    if (id == 6 | id == 17 | id == 76 | id == 68) {
+    if (id == 62 |id == 43 |id == 15 |id == 46 |id == 35| id == 42 | id == 6 | id == 17| id == 27| id == 29 | id == 76 | id == 68 | id == 31 | id == 36 | id == 89 | id == 90| id == 55 | id == 91 | id == 87| id == 95| id == 96| id == 34| id == 13) {
       key = 2
     }
-    if (id == 61 | id == 81 | id == 58 | id == 77) {
+    if (id == 3 |id == 4 |id == 44 |id == 45|id == 93 |id == 12 |id == 73 |id == 48 |id == 30 |id == 33 |id == 61 | id == 81 | id == 58 | id == 77 | id == 79 | id == 80 | id == 16 | id == 19| id == 64| id == 5| id == 24| id == 92| id == 100) {
       key = 3
     }
-    if (id == 70 | id == 82) {
+    if (id == 57 |id == 52 |id == 26 |id == 56 |id == 32 |id == 37 | id == 70 | id == 71| id == 72| id == 82 | id == 84 | id == 86 | id == 22 | id == 38 | id == 86 | id == 98 | id == 101| id == 20| id == 69| id == 78| id == 11| id ==67| id ==97) {
       key = 4
     }
     let url = {
