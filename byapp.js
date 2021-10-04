@@ -64,6 +64,8 @@ let byPhones = ""
         user=zhanghu[0]
         mima=zhanghu[1]
         await login();//登录获取token
+        await $.wait(3000);
+        await dati();
       }
     }
   }
@@ -124,6 +126,9 @@ function sign(timeout = 0) {
       try {
         result = JSON.parse(data);
         if (result.code == 1) {
+          if (result.info == '请实名认证后再签到！') {
+            $.log(`\n错误信息：` + result.info)
+          }
           $.log(`\n签到成功获得现金` + result.data.reward)
         } else {
           $.log(`\n每天只能签到一次`)
@@ -155,13 +160,13 @@ function dati(timeout = 0) {
         result = JSON.parse(data);
         if (result.code == 1) {
           tmid = result.data.id
-          $.log(`\n题目iD` + result.data.id)
-          $.log(`\n题目内容` + result.data.title)
-          $.log(`\n选择题` + result.data.values[0].value)
-          $.log(`\n选择题` + result.data.values[1].value)
-          $.log(`\n选择题` + result.data.values[2].value)
-          $.log(`\n选择题` + result.data.values[3].value)
-          await $.wait(10000);
+          $.log(`\n题目iD:` + result.data.id)
+          $.log(`\n题目内容:` + result.data.title)
+          $.log(`\n选择题1` + result.data.values[0].value)
+          $.log(`\n选择题2` + result.data.values[1].value)
+          $.log(`\n选择题3` + result.data.values[2].value)
+          $.log(`\n选择题4` + result.data.values[3].value)
+          await $.wait(15000);
           await godati(tmid);//开始答题
         } else {
           $.log(`\n返回错误信息` + result.info)
@@ -180,16 +185,16 @@ function dati(timeout = 0) {
 function godati(id) {
   return new Promise((resolve) => {
     key = 1
-    if (id == 2) {
+    if (id == 19 | id == 18) {
       key = 1
     }
-    if (id == 22 | id == 5) {
+    if (id == 22 | id == 5 | id == 11 | id == 2) {
       key = 2
     }
-    if (id == 15) {
+    if (id == 15 | id == 7) {
       key = 3
     }
-    if (id == 20) {
+    if (id == 20 | id == 14 | id == 12) {
       key = 4
     }
     let url = {
@@ -208,14 +213,14 @@ function godati(id) {
         result = JSON.parse(data);
         if (result.code == 1) {
           tmid = result.data.id
-          $.log(`\n答题状态` + result.info + `\n开始下一题`)
-          $.log(`\n题目iD` + result.data.id)
-          $.log(`\n题目内容` + result.data.title)
-          $.log(`\n选择题` + result.data.values[0].value)
-          $.log(`\n选择题` + result.data.values[1].value)
-          $.log(`\n选择题` + result.data.values[2].value)
-          $.log(`\n选择题` + result.data.values[3].value)
-          await $.wait(10000);
+          $.log(`\n答题状态:` + result.info + `\n开始下一题`)
+          $.log(`\n题目iD:` + result.data.id)
+          $.log(`\n题目内容:` + result.data.title)
+          $.log(`\n选择题1` + result.data.values[0].value)
+          $.log(`\n选择题2` + result.data.values[1].value)
+          $.log(`\n选择题3` + result.data.values[2].value)
+          $.log(`\n选择题4` + result.data.values[3].value)
+          await $.wait(15000);
           await godati(tmid);//开始答题
         } else {
           $.log(`\n返回错误信息` + result.info)
